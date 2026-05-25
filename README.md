@@ -11,9 +11,6 @@
 
 > Sistema de registro de estudos inspirado no **Notion** e **Obsidian**, com editor de texto rico, autenticação JWT, arquitetura de microserviços e deploy containerizado.
 
-<p align="center">
-  <img src="https://via.placeholder.com/800x400/1976d2/ffffff?text=StudyVault+Screenshot" alt="StudyVault Screenshot" width="800"/>
-</p>
 
 ---
 
