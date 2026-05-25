@@ -1,0 +1,14 @@
+# .dockerignore
+node_modules
+.git
+.gitignore
+*.md
+.vscode
+.idea
+**/node_modules
+**/target
+**/build
+**/dist
+.env
+.env.local
+*.log

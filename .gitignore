@@ -1,0 +1,54 @@
+
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+
+# Java
+backend/target/
+*.class
+*.jar
+*.war
+*.nar
+*.ear
+*.log
+*.tmp
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.project
+.classpath
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Docker
+docker-compose.override.yml
+
+# Environment
+.env
+.env.local
+.env.production
+application-local.yml
+
+# Logs
+logs/
+*.log
+
+# Backup
+*.bak
+backup/
+frontend_old/
+
+# Build
+build/
+out/
