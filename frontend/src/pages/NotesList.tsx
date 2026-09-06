@@ -50,6 +50,7 @@ import {
   SortableContext,
   useSortable,
   rectSortingStrategy,
+  verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { noteService } from "../services/noteService";
@@ -76,34 +77,37 @@ const statusConfig: Record<
   }
 > = {
   COMPLETED: {
-    label: "Concluído",
+    label: "Completed",
     color: "success",
     icon: <CheckCircleOutline sx={{ fontSize: 12 }} />,
   },
   IN_PROGRESS: {
-    label: "Em progresso",
+    label: "In Progress",
     color: "warning",
     icon: <Pending sx={{ fontSize: 12 }} />,
   },
   DRAFT: {
-    label: "Rascunho",
+    label: "Draft",
     color: "default",
     icon: <RadioButtonUnchecked sx={{ fontSize: 12 }} />,
   },
 };
 
 const filterConfig = [
-  { key: "ALL", label: "Todas" },
-  { key: "DRAFT", label: "Rascunhos" },
-  { key: "IN_PROGRESS", label: "Em progresso" },
-  { key: "COMPLETED", label: "Concluídas" },
+  { key: "ALL", label: "All" },
+  { key: "DRAFT", label: "Drafts" },
+  { key: "IN_PROGRESS", label: "In Progress" },
+  { key: "COMPLETED", label: "Completed" },
 ] as const;
 
 // ─── Card ─────────────────────────────────────────────────────────────────────
 
-const SortableNoteCard: React.FC<{ note: StudyNote }> = ({ note }) => {
+const SortableNoteCard: React.FC<{
+  note: StudyNote;
+  viewMode: "grid" | "list";
+}> = ({ note, viewMode }) => {
   const navigate = useNavigate();
-  const { setNodeRef, transform, transition } = useSortable({
+  const { setNodeRef, transform, transition, isDragging } = useSortable({
     id: note.id || "temp",
   });
 
@@ -112,20 +116,28 @@ const SortableNoteCard: React.FC<{ note: StudyNote }> = ({ note }) => {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    opacity: isDragging ? 0.5 : 1,
   };
 
   // Strip HTML tags for preview text
   const plainText = note.content.replace(/<[^>]*>/g, "").slice(0, 160);
 
   return (
-    <Grid item xs={12} sm={6} md={4} ref={setNodeRef} style={style}>
+    <Grid
+      item
+      xs={12}
+      sm={viewMode === "grid" ? 6 : 12}
+      md={viewMode === "grid" ? 4 : 12}
+      ref={setNodeRef}
+      style={style}
+    >
       <Card
         onClick={() => navigate(`/note/${note.id}`)}
         elevation={0}
         sx={{
           height: "100%",
           display: "flex",
-          flexDirection: "column",
+          flexDirection: viewMode === "grid" ? "column" : "row",
           cursor: "pointer",
           backgroundColor: note.color || "#FFFFFF",
           border: "1px solid",
@@ -160,172 +172,198 @@ const SortableNoteCard: React.FC<{ note: StudyNote }> = ({ note }) => {
           },
         }}
       >
-        <CardContent sx={{ flex: 1, pt: 2.5, pb: 0, px: 2.25 }}>
-          {/* Header row */}
-          <Stack direction="row" alignItems="flex-start" spacing={1} mb={1.5}>
-            <Box
-              sx={{
-                width: 36,
-                height: 36,
-                borderRadius: "10px",
-                backgroundColor: "rgba(0,0,0,0.05)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "1.1rem",
-                flexShrink: 0,
-              }}
-            >
-              {note.icon || "📝"}
-            </Box>
+        {/* Icon/emoji area */}
+        <Box
+          sx={{
+            width: viewMode === "list" ? 80 : "100%",
+            height: viewMode === "list" ? "auto" : 48,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "rgba(0,0,0,0.03)",
+            ...(viewMode === "grid" && {
+              borderBottom: "1px solid",
+              borderColor: "divider",
+            }),
+            ...(viewMode === "list" && {
+              borderRight: "1px solid",
+              borderColor: "divider",
+              flexShrink: 0,
+            }),
+          }}
+        >
+          <Box
+            sx={{
+              width: 36,
+              height: 36,
+              borderRadius: "10px",
+              backgroundColor: "rgba(0,0,0,0.05)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "1.1rem",
+            }}
+          >
+            {note.icon || "📝"}
+          </Box>
+        </Box>
 
-            <Box sx={{ flex: 1, minWidth: 0 }}>
-              <Typography
+        <Box sx={{ flex: 1, minWidth: 0 }}>
+          <CardContent sx={{ flex: 1, pt: 2, pb: 0, px: 2.25 }}>
+            {/* Header row */}
+            <Stack direction="row" alignItems="flex-start" spacing={1} mb={1}>
+              <Box sx={{ flex: 1, minWidth: 0 }}>
+                <Typography
+                  sx={{
+                    fontWeight: 600,
+                    fontSize: "0.9rem",
+                    lineHeight: 1.35,
+                    letterSpacing: "-0.01em",
+                    color: "text.primary",
+                    overflow: "hidden",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                  }}
+                >
+                  {note.title || "Untitled"}
+                </Typography>
+              </Box>
+
+              <IconButton
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  // Toggle favorite
+                  const updatedNote = { ...note, isFavorite: !note.isFavorite };
+                  noteService
+                    .updateNote(note.id!, {
+                      isFavorite: updatedNote.isFavorite,
+                    } as any)
+                    .then(() => {
+                      // Force re-render by updating parent state
+                      window.location.reload();
+                    })
+                    .catch(console.error);
+                }}
                 sx={{
-                  fontWeight: 600,
-                  fontSize: "0.9rem",
-                  lineHeight: 1.35,
-                  letterSpacing: "-0.01em",
-                  color: "text.primary",
+                  mt: "-4px",
+                  mr: "-6px",
+                  borderRadius: "8px",
+                  width: 28,
+                  height: 28,
+                  flexShrink: 0,
+                  color: note.isFavorite ? "warning.main" : "text.disabled",
+                  transition: "color 0.15s",
+                  "&:hover": {
+                    backgroundColor: "rgba(0,0,0,0.05)",
+                    color: note.isFavorite ? "warning.dark" : "text.secondary",
+                  },
+                }}
+              >
+                {note.isFavorite ? (
+                  <Star sx={{ fontSize: 16 }} />
+                ) : (
+                  <StarBorder sx={{ fontSize: 16 }} />
+                )}
+              </IconButton>
+            </Stack>
+
+            {/* Preview text */}
+            {plainText && (
+              <Typography
+                variant="body2"
+                sx={{
+                  color: "text.secondary",
+                  fontSize: "0.78rem",
+                  lineHeight: 1.65,
+                  mb: 1.5,
                   overflow: "hidden",
                   display: "-webkit-box",
-                  WebkitLineClamp: 2,
+                  WebkitLineClamp: viewMode === "grid" ? 3 : 2,
                   WebkitBoxOrient: "vertical",
                 }}
               >
-                {note.title || "Sem título"}
+                {plainText}
               </Typography>
-            </Box>
+            )}
 
-            <IconButton
-              size="small"
-              onClick={(e) => {
-                e.stopPropagation();
-                // Toggle favorite
-                noteService
-                  .updateNote(note.id!, { isFavorite: !note.isFavorite } as any)
-                  .then(() => {
-                    note.isFavorite = !note.isFavorite;
-                  })
-                  .catch(console.error);
-              }}
-              sx={{
-                mt: "-4px",
-                mr: "-6px",
-                borderRadius: "8px",
-                width: 28,
-                height: 28,
-                flexShrink: 0,
-                color: note.isFavorite ? "warning.main" : "text.disabled",
-                transition: "color 0.15s",
-                "&:hover": {
-                  backgroundColor: "rgba(0,0,0,0.05)",
-                  color: note.isFavorite ? "warning.dark" : "text.secondary",
-                },
-              }}
-            >
-              {note.isFavorite ? (
-                <Star sx={{ fontSize: 16 }} />
-              ) : (
-                <StarBorder sx={{ fontSize: 16 }} />
-              )}
-            </IconButton>
-          </Stack>
+            {/* Tags */}
+            {note.tags?.length > 0 && (
+              <Stack
+                direction="row"
+                spacing={0.5}
+                flexWrap="wrap"
+                gap={0.5}
+                mb={0.5}
+              >
+                {note.tags.map((tag) => (
+                  <Chip
+                    key={tag}
+                    label={`#${tag}`}
+                    size="small"
+                    sx={{
+                      height: 20,
+                      fontSize: "0.67rem",
+                      fontWeight: 500,
+                      borderRadius: "5px",
+                      backgroundColor: "rgba(0,0,0,0.06)",
+                      color: "text.secondary",
+                      border: "none",
+                      "& .MuiChip-label": { px: "6px" },
+                    }}
+                  />
+                ))}
+              </Stack>
+            )}
+          </CardContent>
 
-          {/* Preview text */}
-          {plainText && (
-            <Typography
-              variant="body2"
-              sx={{
-                color: "text.secondary",
-                fontSize: "0.78rem",
-                lineHeight: 1.65,
-                mb: 1.75,
-                overflow: "hidden",
-                display: "-webkit-box",
-                WebkitLineClamp: 3,
-                WebkitBoxOrient: "vertical",
-              }}
-            >
-              {plainText}
-            </Typography>
-          )}
-
-          {/* Tags */}
-          {note.tags?.length > 0 && (
-            <Stack
-              direction="row"
-              spacing={0.5}
-              flexWrap="wrap"
-              gap={0.5}
-              mb={0.5}
-            >
-              {note.tags.map((tag) => (
-                <Chip
-                  key={tag}
-                  label={`#${tag}`}
-                  size="small"
-                  sx={{
-                    height: 20,
-                    fontSize: "0.67rem",
-                    fontWeight: 500,
-                    borderRadius: "5px",
-                    backgroundColor: "rgba(0,0,0,0.06)",
-                    color: "text.secondary",
-                    border: "none",
-                    "& .MuiChip-label": { px: "6px" },
-                  }}
-                />
-              ))}
-            </Stack>
-          )}
-        </CardContent>
-
-        {/* Footer */}
-        <CardActions
-          disableSpacing
-          sx={{
-            px: 2.25,
-            pt: 1.25,
-            pb: 1.75,
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <Typography
+          {/* Footer */}
+          <CardActions
+            disableSpacing
             sx={{
-              fontSize: "0.68rem",
-              color: "text.disabled",
-              fontWeight: 400,
-              letterSpacing: "0.01em",
+              px: 2.25,
+              pt: 1,
+              pb: 1.5,
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
-            {note.updatedAt
-              ? new Date(note.updatedAt).toLocaleDateString("pt-BR", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })
-              : "Sem data"}
-          </Typography>
+            <Typography
+              sx={{
+                fontSize: "0.68rem",
+                color: "text.disabled",
+                fontWeight: 400,
+                letterSpacing: "0.01em",
+              }}
+            >
+              {note.updatedAt
+                ? new Date(note.updatedAt).toLocaleDateString("en-US", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })
+                : "No date"}
+            </Typography>
 
-          <Chip
-            icon={status.icon as any}
-            label={status.label}
-            size="small"
-            color={status.color}
-            variant="outlined"
-            sx={{
-              height: 22,
-              borderRadius: "6px",
-              fontSize: "0.67rem",
-              fontWeight: 600,
-              letterSpacing: "0.01em",
-              "& .MuiChip-icon": { fontSize: 11, ml: "5px" },
-              "& .MuiChip-label": { pr: "7px" },
-            }}
-          />
-        </CardActions>
+            <Chip
+              icon={status.icon as any}
+              label={status.label}
+              size="small"
+              color={status.color}
+              variant="outlined"
+              sx={{
+                height: 22,
+                borderRadius: "6px",
+                fontSize: "0.67rem",
+                fontWeight: 600,
+                letterSpacing: "0.01em",
+                "& .MuiChip-icon": { fontSize: 11, ml: "5px" },
+                "& .MuiChip-label": { pr: "7px" },
+              }}
+            />
+          </CardActions>
+        </Box>
       </Card>
     </Grid>
   );
@@ -355,14 +393,29 @@ export const NotesList: React.FC = () => {
       const data = await noteService.getAllNotes();
       setNotes(data);
     } catch (error) {
-      console.error("Erro ao carregar notas:", error);
+      console.error("Error loading notes:", error);
     }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (over && active.id !== over.id) {
-      // Implementar reordenação
+      const oldIndex = filteredNotes.findIndex((n) => n.id === active.id);
+      const newIndex = filteredNotes.findIndex((n) => n.id === over.id);
+
+      if (oldIndex !== -1 && newIndex !== -1) {
+        const newNotes = [...notes];
+        const [movedNote] = newNotes.splice(
+          notes.findIndex((n) => n.id === active.id),
+          1,
+        );
+        newNotes.splice(
+          notes.findIndex((n) => n.id === over.id),
+          0,
+          movedNote,
+        );
+        setNotes(newNotes);
+      }
     }
   };
 
@@ -450,7 +503,7 @@ export const NotesList: React.FC = () => {
                       lineHeight: 1,
                     }}
                   >
-                    {notes.length} nota{notes.length !== 1 ? "s" : ""}
+                    {notes.length} note{notes.length !== 1 ? "s" : ""}
                   </Typography>
                 </Box>
               </Stack>
@@ -556,40 +609,37 @@ export const NotesList: React.FC = () => {
               <MenuItem
                 onClick={() => {
                   setUserMenuAnchor(null);
-                  // Implementar página de perfil futuramente
                 }}
                 sx={{ borderRadius: "8px", fontSize: "0.85rem", py: 0.75 }}
               >
                 <ListItemIcon>
                   <Person sx={{ fontSize: 18 }} />
                 </ListItemIcon>
-                <ListItemText>Perfil</ListItemText>
+                <ListItemText>Profile</ListItemText>
               </MenuItem>
 
               <MenuItem
                 onClick={() => {
                   setUserMenuAnchor(null);
-                  // Implementar configurações
                 }}
                 sx={{ borderRadius: "8px", fontSize: "0.85rem", py: 0.75 }}
               >
                 <ListItemIcon>
                   <Settings sx={{ fontSize: 18 }} />
                 </ListItemIcon>
-                <ListItemText>Configurações</ListItemText>
+                <ListItemText>Settings</ListItemText>
               </MenuItem>
 
               <MenuItem
                 onClick={() => {
                   setUserMenuAnchor(null);
-                  // Implementar ajuda
                 }}
                 sx={{ borderRadius: "8px", fontSize: "0.85rem", py: 0.75 }}
               >
                 <ListItemIcon>
                   <HelpOutline sx={{ fontSize: 18 }} />
                 </ListItemIcon>
-                <ListItemText>Ajuda</ListItemText>
+                <ListItemText>Help</ListItemText>
               </MenuItem>
 
               <Divider sx={{ my: 0.5 }} />
@@ -609,7 +659,7 @@ export const NotesList: React.FC = () => {
                 <ListItemIcon>
                   <Logout sx={{ fontSize: 18, color: "error.main" }} />
                 </ListItemIcon>
-                <ListItemText>Sair</ListItemText>
+                <ListItemText>Sign Out</ListItemText>
               </MenuItem>
             </Menu>
 
@@ -622,7 +672,7 @@ export const NotesList: React.FC = () => {
             >
               {/* Search */}
               <TextField
-                placeholder="Buscar notas..."
+                placeholder="Search notes..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 size="small"
@@ -695,15 +745,15 @@ export const NotesList: React.FC = () => {
                     py: 0.75,
                   }}
                 >
-                  Ordenar por
+                  Sort by
                 </Typography>
                 {[
                   {
                     value: "updated",
-                    label: "Mais recentes",
+                    label: "Most Recent",
                     Icon: AccessTime,
                   },
-                  { value: "alpha", label: "Alfabética", Icon: SortByAlpha },
+                  { value: "alpha", label: "Alphabetical", Icon: SortByAlpha },
                 ].map(({ value, label, Icon }) => (
                   <MenuItem
                     key={value}
@@ -758,10 +808,10 @@ export const NotesList: React.FC = () => {
                   },
                 }}
               >
-                <ToggleButton value="grid">
+                <ToggleButton value="grid" aria-label="Grid view">
                   <ViewModule sx={{ fontSize: 17 }} />
                 </ToggleButton>
-                <ToggleButton value="list">
+                <ToggleButton value="list" aria-label="List view">
                   <ViewList sx={{ fontSize: 17 }} />
                 </ToggleButton>
               </ToggleButtonGroup>
@@ -861,15 +911,15 @@ export const NotesList: React.FC = () => {
                 fontSize: "1rem",
               }}
             >
-              {searchTerm ? "Nenhum resultado" : "Nenhuma nota ainda"}
+              {searchTerm ? "No results found" : "No notes yet"}
             </Typography>
             <Typography
               variant="body2"
               sx={{ color: "text.disabled", fontSize: "0.85rem" }}
             >
               {searchTerm
-                ? `Não encontramos nada para "${searchTerm}"`
-                : "Crie sua primeira nota clicando no botão +"}
+                ? `We couldn't find anything for "${searchTerm}"`
+                : "Create your first note by clicking the + button"}
             </Typography>
           </Box>
         )}
@@ -882,11 +932,19 @@ export const NotesList: React.FC = () => {
           >
             <SortableContext
               items={filteredNotes.map((n) => n.id || "temp")}
-              strategy={rectSortingStrategy}
+              strategy={
+                viewMode === "grid"
+                  ? rectSortingStrategy
+                  : verticalListSortingStrategy
+              }
             >
               <Grid container spacing={2}>
                 {filteredNotes.map((note) => (
-                  <SortableNoteCard key={note.id} note={note} />
+                  <SortableNoteCard
+                    key={note.id}
+                    note={note}
+                    viewMode={viewMode}
+                  />
                 ))}
               </Grid>
             </SortableContext>
@@ -895,7 +953,7 @@ export const NotesList: React.FC = () => {
 
         {/* ── FAB ── */}
         <SpeedDial
-          ariaLabel="Criar nova nota"
+          ariaLabel="Create new note"
           sx={{
             position: "fixed",
             bottom: 36,

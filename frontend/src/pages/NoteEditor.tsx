@@ -1,3 +1,4 @@
+// src/pages/NoteEditor.tsx
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -44,20 +45,39 @@ interface StudyNote {
 }
 
 const COLORS = [
-  "#FFFFFF", "#FFF8E1", "#E8F5E9", "#E3F2FD", "#F3E5F5",
-  "#FFE0B2", "#C8E6C9", "#BBDEFB", "#FFCDD2", "#D1C4E9",
-  "#B2DFDB", "#F0F4C3",
+  "#FFFFFF",
+  "#FFF8E1",
+  "#E8F5E9",
+  "#E3F2FD",
+  "#F3E5F5",
+  "#FFE0B2",
+  "#C8E6C9",
+  "#BBDEFB",
+  "#FFCDD2",
+  "#D1C4E9",
+  "#B2DFDB",
+  "#F0F4C3",
 ];
 
 const ICONS = [
-  "📚", "📝", "💡", "🎯", "📖", "✏️",
-  "🔬", "💻", "📊", "🧠", "🎓", "📌",
+  "📚",
+  "📝",
+  "💡",
+  "🎯",
+  "📖",
+  "✏️",
+  "🔬",
+  "💻",
+  "📊",
+  "🧠",
+  "🎓",
+  "📌",
 ];
 
 const statusConfig = {
-  DRAFT:       { label: "Rascunho",     color: "default"  },
-  IN_PROGRESS: { label: "Em Progresso", color: "warning"  },
-  COMPLETED:   { label: "Concluído",    color: "success"  },
+  DRAFT: { label: "Draft", color: "default" },
+  IN_PROGRESS: { label: "In Progress", color: "warning" },
+  COMPLETED: { label: "Completed", color: "success" },
 } as const;
 
 export const NoteEditor: React.FC = () => {
@@ -95,7 +115,7 @@ export const NoteEditor: React.FC = () => {
         isArchived: data.isArchived || false,
       });
     } catch (error) {
-      console.error("Erro ao carregar nota:", error);
+      console.error("Error loading note:", error);
     }
   };
 
@@ -108,7 +128,7 @@ export const NoteEditor: React.FC = () => {
       }
       navigate("/");
     } catch (error) {
-      console.error("Erro ao salvar:", error);
+      console.error("Error saving note:", error);
     }
   };
 
@@ -157,8 +177,14 @@ export const NoteEditor: React.FC = () => {
             sx={{ px: 2, pt: 2, pb: 1.5 }}
           >
             {/* Back + icon + title */}
-            <Stack direction="row" spacing={1} alignItems="center" flex={1} minWidth={0}>
-              <Tooltip title="Voltar">
+            <Stack
+              direction="row"
+              spacing={1}
+              alignItems="center"
+              flex={1}
+              minWidth={0}
+            >
+              <Tooltip title="Back">
                 <IconButton
                   onClick={() => navigate("/")}
                   size="small"
@@ -167,19 +193,23 @@ export const NoteEditor: React.FC = () => {
                     border: "1px solid",
                     borderColor: "divider",
                     color: "text.secondary",
-                    "&:hover": { backgroundColor: "action.hover", borderColor: "text.disabled" },
+                    "&:hover": {
+                      backgroundColor: "action.hover",
+                      borderColor: "text.disabled",
+                    },
                   }}
                 >
                   <ArrowBack fontSize="small" />
                 </IconButton>
               </Tooltip>
 
-              <Tooltip title="Trocar ícone">
+              <Tooltip title="Change icon">
                 <IconButton
                   onClick={() => setIconDialog(true)}
                   sx={{
                     borderRadius: "10px",
-                    width: 42, height: 42,
+                    width: 42,
+                    height: 42,
                     fontSize: "1.3rem",
                     border: "1px solid",
                     borderColor: "divider",
@@ -193,7 +223,7 @@ export const NoteEditor: React.FC = () => {
               <TextField
                 fullWidth
                 variant="standard"
-                placeholder="Título da nota..."
+                placeholder="Note title..."
                 value={note.title}
                 onChange={(e) => setNote({ ...note, title: e.target.value })}
                 InputProps={{
@@ -211,7 +241,12 @@ export const NoteEditor: React.FC = () => {
             </Stack>
 
             {/* Actions */}
-            <Stack direction="row" spacing={0.75} alignItems="center" flexShrink={0}>
+            <Stack
+              direction="row"
+              spacing={0.75}
+              alignItems="center"
+              flexShrink={0}
+            >
               <ToggleButtonGroup
                 value={note.status}
                 exclusive
@@ -239,37 +274,64 @@ export const NoteEditor: React.FC = () => {
                   },
                 }}
               >
-                <ToggleButton value="DRAFT">Rascunho</ToggleButton>
-                <ToggleButton value="IN_PROGRESS">Em Progresso</ToggleButton>
-                <ToggleButton value="COMPLETED">Concluído</ToggleButton>
+                <ToggleButton value="DRAFT">Draft</ToggleButton>
+                <ToggleButton value="IN_PROGRESS">In Progress</ToggleButton>
+                <ToggleButton value="COMPLETED">Completed</ToggleButton>
               </ToggleButtonGroup>
 
-              <Divider orientation="vertical" flexItem sx={{ mx: 0.25, my: 0.5 }} />
+              <Divider
+                orientation="vertical"
+                flexItem
+                sx={{ mx: 0.25, my: 0.5 }}
+              />
 
-              <Tooltip title={note.isFavorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}>
+              <Tooltip
+                title={
+                  note.isFavorite ? "Remove from favorites" : "Add to favorites"
+                }
+              >
                 <IconButton
-                  onClick={() => setNote({ ...note, isFavorite: !note.isFavorite })}
+                  onClick={() =>
+                    setNote({ ...note, isFavorite: !note.isFavorite })
+                  }
                   size="small"
-                  sx={{ borderRadius: "8px", "&:hover": { backgroundColor: "action.hover" } }}
+                  sx={{
+                    borderRadius: "8px",
+                    "&:hover": { backgroundColor: "action.hover" },
+                  }}
                 >
-                  {note.isFavorite ? <Star sx={{ color: "warning.main", fontSize: 20 }} /> : <StarBorder sx={{ fontSize: 20, color: "text.secondary" }} />}
+                  {note.isFavorite ? (
+                    <Star sx={{ color: "warning.main", fontSize: 20 }} />
+                  ) : (
+                    <StarBorder
+                      sx={{ fontSize: 20, color: "text.secondary" }}
+                    />
+                  )}
                 </IconButton>
               </Tooltip>
 
-              <Tooltip title="Cor de fundo">
+              <Tooltip title="Background color">
                 <IconButton
                   onClick={() => setColorDialog(true)}
                   size="small"
-                  sx={{ borderRadius: "8px", color: "text.secondary", "&:hover": { backgroundColor: "action.hover" } }}
+                  sx={{
+                    borderRadius: "8px",
+                    color: "text.secondary",
+                    "&:hover": { backgroundColor: "action.hover" },
+                  }}
                 >
                   <ColorLens sx={{ fontSize: 20 }} />
                 </IconButton>
               </Tooltip>
 
-              <Tooltip title="Arquivar">
+              <Tooltip title="Archive">
                 <IconButton
                   size="small"
-                  sx={{ borderRadius: "8px", color: "text.secondary", "&:hover": { backgroundColor: "action.hover" } }}
+                  sx={{
+                    borderRadius: "8px",
+                    color: "text.secondary",
+                    "&:hover": { backgroundColor: "action.hover" },
+                  }}
                 >
                   <Archive sx={{ fontSize: 20 }} />
                 </IconButton>
@@ -288,7 +350,7 @@ export const NoteEditor: React.FC = () => {
                   fontSize: "0.875rem",
                 }}
               >
-                Salvar
+                Save
               </Button>
             </Stack>
           </Stack>
@@ -299,7 +361,8 @@ export const NoteEditor: React.FC = () => {
             alignItems="center"
             spacing={0.75}
             sx={{
-              px: 2, pb: 1.75,
+              px: 2,
+              pb: 1.75,
               flexWrap: "wrap",
               gap: 0.75,
               borderTop: note.tags.length > 0 ? "1px solid" : "none",
@@ -320,10 +383,12 @@ export const NoteEditor: React.FC = () => {
             ))}
             <TextField
               size="small"
-              placeholder="Adicionar tag..."
+              placeholder="Add tag..."
               onKeyPress={handleTagAdd}
               InputProps={{
-                startAdornment: <Tag sx={{ mr: 0.5, fontSize: 16, color: "text.disabled" }} />,
+                startAdornment: (
+                  <Tag sx={{ mr: 0.5, fontSize: 16, color: "text.disabled" }} />
+                ),
                 sx: { borderRadius: "8px", fontSize: "0.8rem" },
               }}
               sx={{
@@ -356,28 +421,38 @@ export const NoteEditor: React.FC = () => {
           />
         </Paper>
 
-        {/* Dialog de Cores */}
+        {/* Color Dialog */}
         <Dialog
           open={colorDialog}
           onClose={() => setColorDialog(false)}
           PaperProps={{ sx: { borderRadius: "14px", minWidth: 320 } }}
         >
-          <DialogTitle sx={{ fontWeight: 600, pb: 1 }}>Cor de fundo</DialogTitle>
+          <DialogTitle sx={{ fontWeight: 600, pb: 1 }}>
+            Background Color
+          </DialogTitle>
           <DialogContent>
             <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", pt: 0.5 }}>
               {COLORS.map((color) => (
                 <Box
                   key={color}
-                  onClick={() => { setNote({ ...note, color }); setColorDialog(false); }}
+                  onClick={() => {
+                    setNote({ ...note, color });
+                    setColorDialog(false);
+                  }}
                   sx={{
-                    width: 44, height: 44,
+                    width: 44,
+                    height: 44,
                     bgcolor: color,
                     border: "2px solid",
-                    borderColor: note.color === color ? "primary.main" : "divider",
+                    borderColor:
+                      note.color === color ? "primary.main" : "divider",
                     borderRadius: "10px",
                     cursor: "pointer",
                     transition: "all 0.15s",
-                    "&:hover": { transform: "scale(1.1)", boxShadow: "0 4px 12px rgba(0,0,0,0.15)" },
+                    "&:hover": {
+                      transform: "scale(1.1)",
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                    },
                   }}
                 />
               ))}
@@ -385,27 +460,35 @@ export const NoteEditor: React.FC = () => {
           </DialogContent>
         </Dialog>
 
-        {/* Dialog de Ícones */}
+        {/* Icon Dialog */}
         <Dialog
           open={iconDialog}
           onClose={() => setIconDialog(false)}
           PaperProps={{ sx: { borderRadius: "14px" } }}
         >
-          <DialogTitle sx={{ fontWeight: 600, pb: 1 }}>Ícone da nota</DialogTitle>
+          <DialogTitle sx={{ fontWeight: 600, pb: 1 }}>Note Icon</DialogTitle>
           <DialogContent>
             <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", pt: 0.5 }}>
               {ICONS.map((icon) => (
                 <IconButton
                   key={icon}
-                  onClick={() => { setNote({ ...note, icon }); setIconDialog(false); }}
+                  onClick={() => {
+                    setNote({ ...note, icon });
+                    setIconDialog(false);
+                  }}
                   sx={{
                     fontSize: "1.8rem",
-                    width: 52, height: 52,
+                    width: 52,
+                    height: 52,
                     borderRadius: "10px",
                     border: "2px solid",
-                    borderColor: note.icon === icon ? "primary.main" : "divider",
+                    borderColor:
+                      note.icon === icon ? "primary.main" : "divider",
                     transition: "all 0.15s",
-                    "&:hover": { transform: "scale(1.1)", backgroundColor: "action.hover" },
+                    "&:hover": {
+                      transform: "scale(1.1)",
+                      backgroundColor: "action.hover",
+                    },
                   }}
                 >
                   {icon}

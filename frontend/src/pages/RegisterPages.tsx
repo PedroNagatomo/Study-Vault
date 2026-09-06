@@ -1,5 +1,5 @@
 // src/pages/RegisterPage.tsx
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   TextField,
   Button,
@@ -11,7 +11,7 @@ import {
   IconButton,
   Link,
   alpha,
-} from '@mui/material';
+} from "@mui/material";
 import {
   Visibility,
   VisibilityOff,
@@ -21,34 +21,34 @@ import {
   ArrowForward,
   ArrowBack,
   CheckCircleOutline,
-} from '@mui/icons-material';
-import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+} from "@mui/icons-material";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
-const steps = ['Dados básicos', 'Informações adicionais'];
+const steps = ["Basic Information", "Additional Information"];
 
 // ─── Shared layout shell (same as LoginPage) ──────────────────────────────────
 
 const AuthShell: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <Box
     sx={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
+      minHeight: "100vh",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
       bgcolor: (t) => t.palette.grey[50],
       p: 2,
     }}
   >
     <Box
       sx={{
-        width: '100%',
+        width: "100%",
         maxWidth: 440,
-        bgcolor: 'background.paper',
-        borderRadius: '20px',
-        border: '1px solid',
-        borderColor: 'divider',
-        overflow: 'hidden',
+        bgcolor: "background.paper",
+        borderRadius: "20px",
+        border: "1px solid",
+        borderColor: "divider",
+        overflow: "hidden",
       }}
     >
       {children}
@@ -59,43 +59,61 @@ const AuthShell: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 // ─── Custom stepper ───────────────────────────────────────────────────────────
 
 const CustomStepper: React.FC<{ activeStep: number }> = ({ activeStep }) => (
-  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0, px: 4, py: 2.25, borderBottom: '1px solid', borderColor: 'divider' }}>
+  <Box
+    sx={{
+      display: "flex",
+      alignItems: "center",
+      gap: 0,
+      px: 4,
+      py: 2.25,
+      borderBottom: "1px solid",
+      borderColor: "divider",
+    }}
+  >
     {steps.map((label, i) => {
       const done = i < activeStep;
       const active = i === activeStep;
       return (
         <React.Fragment key={label}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Box
               sx={{
                 width: 26,
                 height: 26,
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                borderRadius: "50%",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
                 flexShrink: 0,
-                transition: 'all 0.2s',
+                transition: "all 0.2s",
                 ...(done
-                  ? { bgcolor: 'success.main', color: '#fff' }
+                  ? { bgcolor: "success.main", color: "#fff" }
                   : active
-                  ? { bgcolor: 'primary.main', color: '#fff' }
-                  : { bgcolor: 'action.selected', color: 'text.disabled' }
-                ),
+                    ? { bgcolor: "primary.main", color: "#fff" }
+                    : { bgcolor: "action.selected", color: "text.disabled" }),
               }}
             >
-              {done
-                ? <CheckCircleOutline sx={{ fontSize: 16 }} />
-                : <Typography sx={{ fontSize: '0.72rem', fontWeight: 700, lineHeight: 1 }}>{i + 1}</Typography>
-              }
+              {done ? (
+                <CheckCircleOutline sx={{ fontSize: 16 }} />
+              ) : (
+                <Typography
+                  sx={{ fontSize: "0.72rem", fontWeight: 700, lineHeight: 1 }}
+                >
+                  {i + 1}
+                </Typography>
+              )}
             </Box>
             <Typography
               sx={{
-                fontSize: '0.78rem',
+                fontSize: "0.78rem",
                 fontWeight: active ? 600 : 400,
-                color: active ? 'text.primary' : done ? 'success.main' : 'text.disabled',
-                transition: 'all 0.2s',
-                whiteSpace: 'nowrap',
+                color: active
+                  ? "text.primary"
+                  : done
+                    ? "success.main"
+                    : "text.disabled",
+                transition: "all 0.2s",
+                whiteSpace: "nowrap",
               }}
             >
               {label}
@@ -106,10 +124,10 @@ const CustomStepper: React.FC<{ activeStep: number }> = ({ activeStep }) => (
             <Box
               sx={{
                 flex: 1,
-                height: '1px',
+                height: "1px",
                 mx: 1.5,
-                bgcolor: i < activeStep ? 'success.light' : 'divider',
-                transition: 'background-color 0.3s',
+                bgcolor: i < activeStep ? "success.light" : "divider",
+                transition: "background-color 0.3s",
               }}
             />
           )}
@@ -122,14 +140,14 @@ const CustomStepper: React.FC<{ activeStep: number }> = ({ activeStep }) => (
 // ─── Shared field style ────────────────────────────────────────────────────────
 
 const fieldSx = {
-  '& .MuiOutlinedInput-root': {
-    borderRadius: '10px',
-    fontSize: '0.9rem',
-    '& fieldset': { borderColor: 'divider' },
-    '&:hover fieldset': { borderColor: 'text.disabled' },
+  "& .MuiOutlinedInput-root": {
+    borderRadius: "10px",
+    fontSize: "0.9rem",
+    "& fieldset": { borderColor: "divider" },
+    "&:hover fieldset": { borderColor: "text.disabled" },
   },
-  '& .MuiInputLabel-root': { fontSize: '0.9rem' },
-  '& .MuiFormHelperText-root': { fontSize: '0.75rem', mx: '2px' },
+  "& .MuiInputLabel-root": { fontSize: "0.9rem" },
+  "& .MuiFormHelperText-root": { fontSize: "0.75rem", mx: "2px" },
 };
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
@@ -139,43 +157,43 @@ export const RegisterPage: React.FC = () => {
   const { register } = useAuth();
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    fullName: '',
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    fullName: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleNext = () => {
     if (activeStep === 0) {
       if (!formData.username || !formData.email || !formData.password) {
-        setError('Preencha todos os campos obrigatórios');
+        setError("Please fill in all required fields");
         return;
       }
       if (formData.password !== formData.confirmPassword) {
-        setError('As senhas não conferem');
+        setError("Passwords do not match");
         return;
       }
       if (formData.password.length < 6) {
-        setError('A senha deve ter no mínimo 6 caracteres');
+        setError("Password must be at least 6 characters long");
         return;
       }
     }
-    setError('');
+    setError("");
     setActiveStep((prev) => prev + 1);
   };
 
   const handleBack = () => {
-    setError('');
+    setError("");
     setActiveStep((prev) => prev - 1);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setIsLoading(true);
     try {
       await register({
@@ -184,11 +202,11 @@ export const RegisterPage: React.FC = () => {
         password: formData.password,
         fullName: formData.fullName,
       });
-      navigate('/');
+      navigate("/");
     } catch (err: any) {
       setError(
         err.response?.data?.message ||
-        'Erro ao criar conta. Tente novamente.'
+          "Failed to create account. Please try again.",
       );
     } finally {
       setIsLoading(false);
@@ -203,22 +221,22 @@ export const RegisterPage: React.FC = () => {
           px: 4,
           pt: 4.5,
           pb: 3,
-          borderBottom: '1px solid',
-          borderColor: 'divider',
-          textAlign: 'center',
+          borderBottom: "1px solid",
+          borderColor: "divider",
+          textAlign: "center",
         }}
       >
         <Box
           sx={{
             width: 52,
             height: 52,
-            borderRadius: '14px',
+            borderRadius: "14px",
             bgcolor: (t) => alpha(t.palette.primary.main, 0.1),
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '1.5rem',
-            mx: 'auto',
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "1.5rem",
+            mx: "auto",
             mb: 2,
           }}
         >
@@ -226,12 +244,16 @@ export const RegisterPage: React.FC = () => {
         </Box>
         <Typography
           variant="h5"
-          sx={{ fontWeight: 700, letterSpacing: '-0.02em', mb: 0.5 }}
+          sx={{ fontWeight: 700, letterSpacing: "-0.02em", mb: 0.5 }}
         >
-          Criar conta
+          Create Account
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.85rem' }}>
-          Comece a organizar seus estudos gratuitamente
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ fontSize: "0.85rem" }}
+        >
+          Start organizing your studies for free
         </Typography>
       </Box>
 
@@ -245,9 +267,9 @@ export const RegisterPage: React.FC = () => {
             severity="error"
             sx={{
               mb: 2.5,
-              borderRadius: '10px',
-              fontSize: '0.82rem',
-              alignItems: 'center',
+              borderRadius: "10px",
+              fontSize: "0.82rem",
+              alignItems: "center",
             }}
           >
             {error}
@@ -256,19 +278,21 @@ export const RegisterPage: React.FC = () => {
 
         {/* Step 0: credentials */}
         {activeStep === 0 && (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             <TextField
               fullWidth
-              label="Nome de usuário"
+              label="Username"
               value={formData.username}
-              onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, username: e.target.value })
+              }
               required
               autoFocus
               sx={fieldSx}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Person sx={{ fontSize: 18, color: 'text.disabled' }} />
+                    <Person sx={{ fontSize: 18, color: "text.disabled" }} />
                   </InputAdornment>
                 ),
               }}
@@ -279,13 +303,15 @@ export const RegisterPage: React.FC = () => {
               label="Email"
               type="email"
               value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, email: e.target.value })
+              }
               required
               sx={fieldSx}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Email sx={{ fontSize: 18, color: 'text.disabled' }} />
+                    <Email sx={{ fontSize: 18, color: "text.disabled" }} />
                   </InputAdornment>
                 ),
               }}
@@ -293,17 +319,19 @@ export const RegisterPage: React.FC = () => {
 
             <TextField
               fullWidth
-              label="Senha"
-              type={showPassword ? 'text' : 'password'}
+              label="Password"
+              type={showPassword ? "text" : "password"}
               value={formData.password}
-              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, password: e.target.value })
+              }
               required
-              helperText="Mínimo de 6 caracteres"
+              helperText="Minimum of 6 characters"
               sx={fieldSx}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Lock sx={{ fontSize: 18, color: 'text.disabled' }} />
+                    <Lock sx={{ fontSize: 18, color: "text.disabled" }} />
                   </InputAdornment>
                 ),
                 endAdornment: (
@@ -312,12 +340,16 @@ export const RegisterPage: React.FC = () => {
                       onClick={() => setShowPassword(!showPassword)}
                       edge="end"
                       size="small"
-                      sx={{ color: 'text.disabled', '&:hover': { color: 'text.secondary' } }}
+                      sx={{
+                        color: "text.disabled",
+                        "&:hover": { color: "text.secondary" },
+                      }}
                     >
-                      {showPassword
-                        ? <VisibilityOff sx={{ fontSize: 18 }} />
-                        : <Visibility sx={{ fontSize: 18 }} />
-                      }
+                      {showPassword ? (
+                        <VisibilityOff sx={{ fontSize: 18 }} />
+                      ) : (
+                        <Visibility sx={{ fontSize: 18 }} />
+                      )}
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -326,10 +358,12 @@ export const RegisterPage: React.FC = () => {
 
             <TextField
               fullWidth
-              label="Confirmar senha"
+              label="Confirm Password"
               type="password"
               value={formData.confirmPassword}
-              onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, confirmPassword: e.target.value })
+              }
               required
               error={
                 formData.confirmPassword.length > 0 &&
@@ -338,14 +372,14 @@ export const RegisterPage: React.FC = () => {
               helperText={
                 formData.confirmPassword.length > 0 &&
                 formData.password !== formData.confirmPassword
-                  ? 'As senhas não conferem'
-                  : ''
+                  ? "Passwords do not match"
+                  : ""
               }
               sx={fieldSx}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Lock sx={{ fontSize: 18, color: 'text.disabled' }} />
+                    <Lock sx={{ fontSize: 18, color: "text.disabled" }} />
                   </InputAdornment>
                 ),
               }}
@@ -355,33 +389,42 @@ export const RegisterPage: React.FC = () => {
 
         {/* Step 1: profile */}
         {activeStep === 1 && (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {/* Visual cue for optional step */}
             <Box
               sx={{
                 p: 2,
-                borderRadius: '10px',
+                borderRadius: "10px",
                 bgcolor: (t) => alpha(t.palette.info.main, 0.06),
-                border: '1px solid',
+                border: "1px solid",
                 borderColor: (t) => alpha(t.palette.info.main, 0.15),
               }}
             >
-              <Typography sx={{ fontSize: '0.8rem', color: 'text.secondary', lineHeight: 1.5 }}>
-                Este passo é <strong>opcional</strong>. Você pode pular e completar seu perfil depois.
+              <Typography
+                sx={{
+                  fontSize: "0.8rem",
+                  color: "text.secondary",
+                  lineHeight: 1.5,
+                }}
+              >
+                This step is <strong>optional</strong>. You can skip it and
+                complete your profile later.
               </Typography>
             </Box>
 
             <TextField
               fullWidth
-              label="Nome completo"
+              label="Full Name"
               value={formData.fullName}
-              onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, fullName: e.target.value })
+              }
               autoFocus
               sx={fieldSx}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <Person sx={{ fontSize: 18, color: 'text.disabled' }} />
+                    <Person sx={{ fontSize: 18, color: "text.disabled" }} />
                   </InputAdornment>
                 ),
               }}
@@ -390,7 +433,7 @@ export const RegisterPage: React.FC = () => {
         )}
 
         {/* Navigation */}
-        <Box sx={{ display: 'flex', gap: 1.5, mt: 3 }}>
+        <Box sx={{ display: "flex", gap: 1.5, mt: 3 }}>
           {activeStep === 0 ? (
             <>
               <Button
@@ -400,32 +443,35 @@ export const RegisterPage: React.FC = () => {
                 variant="outlined"
                 sx={{
                   height: 44,
-                  borderRadius: '10px',
-                  fontSize: '0.875rem',
+                  borderRadius: "10px",
+                  fontSize: "0.875rem",
                   fontWeight: 500,
-                  textTransform: 'none',
-                  borderColor: 'divider',
-                  color: 'text.secondary',
-                  '&:hover': { borderColor: 'text.disabled', bgcolor: 'action.hover' },
+                  textTransform: "none",
+                  borderColor: "divider",
+                  color: "text.secondary",
+                  "&:hover": {
+                    borderColor: "text.disabled",
+                    bgcolor: "action.hover",
+                  },
                 }}
               >
-                Já tenho conta
+                I already have an account
               </Button>
               <Button
                 onClick={handleNext}
                 fullWidth
                 variant="contained"
                 disableElevation
-                endIcon={<ArrowForward sx={{ fontSize: '16px !important' }} />}
+                endIcon={<ArrowForward sx={{ fontSize: "16px !important" }} />}
                 sx={{
                   height: 44,
-                  borderRadius: '10px',
-                  fontSize: '0.875rem',
+                  borderRadius: "10px",
+                  fontSize: "0.875rem",
                   fontWeight: 600,
-                  textTransform: 'none',
+                  textTransform: "none",
                 }}
               >
-                Próximo
+                Next
               </Button>
             </>
           ) : (
@@ -433,20 +479,23 @@ export const RegisterPage: React.FC = () => {
               <Button
                 onClick={handleBack}
                 variant="outlined"
-                startIcon={<ArrowBack sx={{ fontSize: '16px !important' }} />}
+                startIcon={<ArrowBack sx={{ fontSize: "16px !important" }} />}
                 sx={{
                   height: 44,
-                  borderRadius: '10px',
-                  fontSize: '0.875rem',
+                  borderRadius: "10px",
+                  fontSize: "0.875rem",
                   fontWeight: 500,
-                  textTransform: 'none',
-                  borderColor: 'divider',
-                  color: 'text.secondary',
+                  textTransform: "none",
+                  borderColor: "divider",
+                  color: "text.secondary",
                   px: 2.5,
-                  '&:hover': { borderColor: 'text.disabled', bgcolor: 'action.hover' },
+                  "&:hover": {
+                    borderColor: "text.disabled",
+                    bgcolor: "action.hover",
+                  },
                 }}
               >
-                Voltar
+                Back
               </Button>
               <Button
                 type="submit"
@@ -456,16 +505,17 @@ export const RegisterPage: React.FC = () => {
                 disableElevation
                 sx={{
                   height: 44,
-                  borderRadius: '10px',
-                  fontSize: '0.875rem',
+                  borderRadius: "10px",
+                  fontSize: "0.875rem",
                   fontWeight: 600,
-                  textTransform: 'none',
+                  textTransform: "none",
                 }}
               >
-                {isLoading
-                  ? <CircularProgress size={20} color="inherit" />
-                  : 'Criar conta'
-                }
+                {isLoading ? (
+                  <CircularProgress size={20} color="inherit" />
+                ) : (
+                  "Create Account"
+                )}
               </Button>
             </>
           )}
@@ -474,11 +524,19 @@ export const RegisterPage: React.FC = () => {
         {/* Terms hint — only on final step */}
         {activeStep === 1 && (
           <Typography
-            sx={{ textAlign: 'center', mt: 2, fontSize: '0.75rem', color: 'text.disabled' }}
+            sx={{
+              textAlign: "center",
+              mt: 2,
+              fontSize: "0.75rem",
+              color: "text.disabled",
+            }}
           >
-            Ao criar sua conta você concorda com nossos{' '}
-            <Link underline="hover" sx={{ cursor: 'pointer', color: 'text.secondary' }}>
-              Termos de uso
+            By creating your account you agree to our{" "}
+            <Link
+              underline="hover"
+              sx={{ cursor: "pointer", color: "text.secondary" }}
+            >
+              Terms of Service
             </Link>
           </Typography>
         )}
