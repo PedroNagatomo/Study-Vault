@@ -11,6 +11,7 @@
 
 > Sistema de registro de estudos inspirado no **Notion** e **Obsidian**, com editor de texto rico, autenticação JWT, arquitetura de microserviços e deploy containerizado.
 
+<img width="1770" height="894" alt="Captura de tela 2026-09-03 191746" src="https://github.com/user-attachments/assets/776c8d4f-d7c2-4ff8-b7ed-18ca5ba9b1b1" />
 
 ---
 
