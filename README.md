@@ -9,136 +9,136 @@
 ![JWT](https://img.shields.io/badge/JWT-✓-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
 
-> Sistema de registro de estudos inspirado no **Notion** e **Obsidian**, com editor de texto rico, autenticação JWT, arquitetura de microserviços e deploy containerizado.
+> A study-recording system inspired by **Notion** and **Obsidian**, featuring a rich-text editor, JWT authentication, a microservices architecture, and containerized deployment.
 
-<img width="1770" height="894" alt="Captura de tela 2026-09-03 191746" src="https://github.com/user-attachments/assets/776c8d4f-d7c2-4ff8-b7ed-18ca5ba9b1b1" />
-
----
-
-## 📋 Índice
-
-- [Funcionalidades](#-funcionalidades)
-- [Tecnologias](#-tecnologias)
-- [Arquitetura](#-arquitetura)
-- [Pré-requisitos](#-pré-requisitos)
-- [Instalação e Execução](#-instalação-e-execução)
+<img width="1770" height="894" alt="Screenshot taken on September 3, 2026 at 7:17:46 PM" src="https://github.com/user-attachments/assets/776c8d4f-d7c2-4ff8-b7ed-18ca5ba9b1b1" />
 
 ---
 
-## ✨ Funcionalidades
+## 📋 Table of Contents
 
-### 📝 Editor de Texto Rico
-- Formatação completa: **negrito**, *itálico*, <u>sublinhado</u>, ~~tachado~~
-- Títulos hierárquicos (H1 a H6)
-- Listas ordenadas e não ordenadas
-- Blocos de citação (blockquote)
-- Blocos de código com syntax highlighting
-- Tabelas dinâmicas
-- Links e imagens embutidas
-- Cores de texto e marca-texto personalizadas
-- Alinhamento de texto (esquerda, centro, direita, justificado)
-- Linhas horizontais
-- Desfazer/Refazer (Undo/Redo)
-
-### 🔐 Autenticação e Segurança
-- Registro de usuários com validação
-- Login com JWT (JSON Web Tokens)
-- Refresh token automático
-- Proteção de rotas por autenticação
-- Isolamento de dados por usuário
-- Senhas criptografadas com BCrypt
-
-### 📋 Gerenciamento de Notas
-- **CRUD completo**: Criar, Ler, Atualizar, Deletar
-- Sistema de **tags** categorizáveis
-- **Status** da nota: Rascunho | Em Progresso | Concluído
-- **Favoritos** para acesso rápido
-- **Cores de fundo** personalizáveis por nota
-- **Ícones/Emojis** para identificação visual
-- **Busca** em tempo real por título e conteúdo
-- **Drag and Drop** para reordenação
-- **Filtros** por status (Todas, Rascunhos, Em Progresso, Concluídas)
-- **Ordenação** por data de atualização ou alfabética
-
-### 🎨 Interface do Usuário
-- Design responsivo (desktop e mobile)
-- Modo de visualização em **Grid** ou **Lista**
-- Cards com cores personalizadas
-- Feedback visual em todas as ações
-- Diálogos modais interativos
-- Indicador de status com cores
+- [Features](#-features)
+- [Technologies](#-technologies)
+- [Architecture](#-architecture)
+- [Prerequisites](#-prerequisites)
+- [Installation and Usage](#-installation-and-usage)
 
 ---
 
-## 🛠️ Tecnologias
+## ✨ Features
+
+### 📝 Rich-Text Editor
+- Full formatting: **bold**, *italic*, <u>underline</u>, ~~strikethrough~~
+- Hierarchical headings (H1 through H6)
+- Ordered and unordered lists
+- Blockquotes
+- Code blocks with syntax highlighting
+- Dynamic tables
+- Embedded links and images
+- Custom text and highlight colors
+- Text alignment (left, center, right, and justified)
+- Horizontal rules
+- Undo/Redo
+
+### 🔐 Authentication and Security
+- User registration with validation
+- JWT (JSON Web Token) login
+- Automatic refresh tokens
+- Authentication-protected routes
+- Per-user data isolation
+- BCrypt-encrypted passwords
+
+### 📋 Note Management
+- Full **CRUD**: Create, Read, Update, Delete
+- Categorizable **tag** system
+- Note **status**: Draft | In Progress | Completed
+- **Favorites** for quick access
+- Customizable **background colors** for each note
+- **Icons/Emojis** for visual identification
+- Real-time **search** by title and content
+- **Drag and drop** reordering
+- **Filters** by status (All, Drafts, In Progress, Completed)
+- **Sorting** by update date or alphabetically
+
+### 🎨 User Interface
+- Responsive design (desktop and mobile)
+- **Grid** or **List** view
+- Cards with customizable colors
+- Visual feedback for all actions
+- Interactive modal dialogs
+- Color-coded status indicators
+
+---
+
+## 🛠️ Technologies
 
 ### Backend
-| Tecnologia | Versão | Descrição |
+| Technology | Version | Description |
 |-----------|--------|-----------|
-| Java | 17 | Linguagem de programação |
-| Spring Boot | 3.2.0 | Framework web |
-| Spring Security | 6.2 | Autenticação e autorização |
-| Spring Data JPA | 3.2 | ORM e persistência |
-| PostgreSQL | 15 | Banco de dados relacional |
+| Java | 17 | Programming language |
+| Spring Boot | 3.2.0 | Web framework |
+| Spring Security | 6.2 | Authentication and authorization |
+| Spring Data JPA | 3.2 | ORM and persistence |
+| PostgreSQL | 15 | Relational database |
 | JWT | 0.12.3 | JSON Web Tokens |
-| Lombok | 1.18 | Redução de boilerplate |
-| SpringDoc | 2.3 | Documentação Swagger |
-| Maven | 3.9 | Gerenciamento de dependências |
+| Lombok | 1.18 | Boilerplate reduction |
+| SpringDoc | 2.3 | Swagger documentation |
+| Maven | 3.9 | Dependency management |
 
 ### Frontend
-| Tecnologia | Versão | Descrição |
+| Technology | Version | Description |
 |-----------|--------|-----------|
-| React | 18.2 | Biblioteca UI |
-| TypeScript | 5.3 | Tipagem estática |
-| Vite | 5.0 | Build tool e dev server |
+| React | 18.2 | UI library |
+| TypeScript | 5.3 | Static typing |
+| Vite | 5.0 | Build tool and development server |
 | Material-UI (MUI) | 5.15 | Design system |
-| TipTap | 2.1 | Editor de texto rico |
-| React Router DOM | 6.21 | Roteamento SPA |
-| Axios | 1.6 | Cliente HTTP |
+| TipTap | 2.1 | Rich-text editor |
+| React Router DOM | 6.21 | SPA routing |
+| Axios | 1.6 | HTTP client |
 | @dnd-kit | 6.1 | Drag and drop |
 
 ### DevOps
-| Tecnologia | Descrição |
+| Technology | Description |
 |-----------|-----------|
-| Docker | Containerização da aplicação |
-| Docker Compose | Orquestração local |
-| Kubernetes | Orquestração em produção |
-| NGINX | Servidor web e proxy reverso |
+| Docker | Application containerization |
+| Docker Compose | Local orchestration |
+| Kubernetes | Production orchestration |
+| NGINX | Web server and reverse proxy |
 
 ---
 
-## 📦 Pré-requisitos
+## 📦 Prerequisites
 
-### Para desenvolvimento com Docker:
+### For Docker development:
 - [Docker](https://www.docker.com/products/docker-desktop) 20.10+
 - [Docker Compose](https://docs.docker.com/compose/install/) 2.0+
 - [Git](https://git-scm.com/downloads) 2.30+
 
-### Para desenvolvimento local:
+### For local development:
 - [Java JDK 17](https://adoptium.net/)
 - [Node.js 18+](https://nodejs.org/)
 - [Maven 3.9+](https://maven.apache.org/)
-- [PostgreSQL 15](https://www.postgresql.org/) (ou use o container Docker)
+- [PostgreSQL 15](https://www.postgresql.org/) (or use the Docker container)
 
-### Para deploy Kubernetes:
+### For Kubernetes deployment:
 - [kubectl](https://kubernetes.io/docs/tasks/tools/)
-- [Minikube](https://minikube.sigs.k8s.io/) ou cluster Kubernetes
+- [Minikube](https://minikube.sigs.k8s.io/) or a Kubernetes cluster
 
 ---
 
-## 🚀 Instalação e Execução
+## 🚀 Installation and Usage
 
-### ⚡ Início Rápido (Recomendado)
+### ⚡ Quick Start (Recommended)
 
 ```
-# 1. Clone o repositório
-git clone https://github.com/seu-usuario/study-vault.git
+# 1. Clone the repository
+git clone https://github.com/your-username/study-vault.git
 cd study-vault
 
-# 2. Execute com Docker Compose
+# 2. Run with Docker Compose
 docker-compose up -d
 
-# 3. Acesse a aplicação
+# 3. Access the application
 echo "Frontend: http://localhost:3000"
 echo "Backend:  http://localhost:8080"
 echo "Swagger:  http://localhost:8080/swagger-ui.html"
